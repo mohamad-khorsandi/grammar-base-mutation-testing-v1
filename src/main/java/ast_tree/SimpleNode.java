@@ -1,13 +1,10 @@
 package ast_tree;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.javaparser.Range;
 import com.github.javaparser.ast.Node;
 
 import java.util.ArrayList;
 
-@JsonSerialize
 public class SimpleNode {
     public SimpleNode(Node node) {
         Range range = node.getRange().orElseThrow();
@@ -26,7 +23,7 @@ public class SimpleNode {
     public int endLine;
     public int startColumn;
     public int endColumn;
-    @JsonIgnore public String text;
+    public String text;
     public String type;
     public ArrayList<SimpleNode> children = new ArrayList<>();
 

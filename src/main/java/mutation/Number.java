@@ -1,6 +1,6 @@
 package mutation;
 
-import code_generator.RandomCodeGenerator;
+import code_generation.RandomCodeGenerator;
 
 public class Number implements Mutation{
 

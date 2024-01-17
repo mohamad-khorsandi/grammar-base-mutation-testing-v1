@@ -1,4 +1,4 @@
-package code_generator;
+package code_generation;
 
 public class Variable {
     int startCol;

@@ -1,6 +1,8 @@
-package code_generator;
+package code_generation;
 
 import com.github.javaparser.ast.Node;
+import grammer_parser.Grammar;
+import grammer_parser.Rule;
 
 import java.util.ArrayList;
 
@@ -12,7 +14,9 @@ public class RandomCodeGenerator {
 
     ArrayList<Variable> variables = new ArrayList<>();
 
-    public static String generate(String grammar) {
+    public static String generate(String nonTerminalName) {
+        Rule r = Grammar.getRule(nonTerminalName);
+        System.out.println(r.toString());
         return "code";
     }
 }
