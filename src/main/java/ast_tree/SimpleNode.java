@@ -7,11 +7,7 @@ import java.util.ArrayList;
 
 public class SimpleNode {
     public SimpleNode(Node node) {
-        Range range = node.getRange().orElseThrow();
-        this.startLine = range.begin.line;
-        this.startColumn = range.begin.column;
-        this.endLine = range.end.line;
-        this.endColumn = range.end.column;
+        range = node.getRange().orElseThrow();
         this.type = node.getClass().getSimpleName();
         this.text = node.toString();
     }
@@ -19,10 +15,7 @@ public class SimpleNode {
     public SimpleNode() {
     }
 
-    public int startLine;
-    public int endLine;
-    public int startColumn;
-    public int endColumn;
+    public Range range;
     public String text;
     public String type;
     public ArrayList<SimpleNode> children = new ArrayList<>();

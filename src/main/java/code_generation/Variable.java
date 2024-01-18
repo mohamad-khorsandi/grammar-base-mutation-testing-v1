@@ -1,10 +1,9 @@
 package code_generation;
 
+import com.github.javaparser.Range;
+
 public class Variable {
-    int startCol;
-    int endCol;
-    int startLine;
-    int endLine;
+    Range range;
     String type;
     String name;
 }
