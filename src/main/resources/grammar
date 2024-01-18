@@ -1,5 +1,3 @@
 <operator>::= "+" | "-" | "*"
-<expr>::= <name> <operator> <name>
-<name>::= "a" |
-          "b" |
-          "c"
+<expr>::= <name> <operator> <expr> | <name>
+<name>::= "a" | "b" |"c"
