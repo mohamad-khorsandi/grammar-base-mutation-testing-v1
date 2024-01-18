@@ -30,13 +30,13 @@ public class AstTreeGenerator {
         return myTreeNode;
     }
 
-    public Node getTreeParent() throws FileNotFoundException {
+    public static Node getTreeParent() throws FileNotFoundException {
         if (treeParent == null)
             generateAst();
         return treeParent;
     }
 
-    public SimpleNode getSimpleTreeParent() throws FileNotFoundException {
+    public static SimpleNode getSimpleTreeParent() throws FileNotFoundException {
         if (simpleTreeParent == null)
             generateAst();
         return simpleTreeParent;
