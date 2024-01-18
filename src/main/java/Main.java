@@ -1,5 +1,4 @@
 import ast_tree.AstTreeGenerator;
-import ast_tree.SimpleNode;
 import code_generation.RandomCodeGenerator;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.BinaryExpr;
@@ -15,6 +14,8 @@ public class Main {
     static Random random = new Random();
     public static void main(String[] args) throws FileNotFoundException {
         Node treeParent = AstTreeGenerator.getTreeParent();
+
+        // choose part
 
         // generate new code for chosen part
 
