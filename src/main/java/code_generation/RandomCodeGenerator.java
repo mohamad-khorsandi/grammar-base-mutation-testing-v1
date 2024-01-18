@@ -15,7 +15,7 @@ public class RandomCodeGenerator {
 
     ArrayList<Variable> variables = new ArrayList<>();
 
-    public static String generate(String nonTerminalName, Range range) {
+    public static String generate(String nonTerminalName, Range range, String varName) {
         Rule r = Grammar.getRule(nonTerminalName);
         System.out.println(r.toString());
         return "code";
