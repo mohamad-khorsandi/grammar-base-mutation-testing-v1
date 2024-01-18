@@ -1,8 +1,7 @@
 import ast_tree.AstTreeGenerator;
-import code_generation.RandomCodeGenerator;
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.expr.BinaryExpr;
-import mutation.Operator;
+import com.github.javaparser.utils.Pair;
+import mutation.*;
 
 
 import java.io.FileNotFoundException;
@@ -15,49 +14,52 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         Node treeParent = AstTreeGenerator.getTreeParent();
 
-        // choose part
+        Node funcParent = findFirstFunc(treeParent)
+                .orElseThrow(() -> new RuntimeException("there is no method"));
 
-        // generate new code for chosen part
+        ArrayList<Pair<Node, Mutable>> availMutableSegments = findAllMutable(funcParent);
+        System.out.println("here are available mutations");
+        for (var a : availMutableSegments) {
+            System.out.println(a.a + " (" + a.b.getClass().getSimpleName() + ")");
+        }
+        int randomIndex = random.nextInt(availMutableSegments.size());
 
-        // regenerate code from tree
+        Pair<Node, Mutable> mutationTarget = availMutableSegments.get(randomIndex);
+
+        mutationTarget.b.mutate(mutationTarget.a);
 
         System.out.println();
-    }
-    static Node chooseTreeSegment(Node treeParent) {
-        Node funcParent = BFSFirst(treeParent, "MethodDeclaration")
-                .orElseThrow(() -> new RuntimeException("there is no method to test"));
-
-        ArrayList<Node> availMutableSegments = BFSAll(funcParent, config.mutableSegments);
-
-        int randomIndex = random.nextInt(availMutableSegments.size());
-        return availMutableSegments.get(randomIndex);
+        // regenerate code from tree
     }
 
-    static Optional<Node> BFSFirst(Node cur, String type) {
+    static Optional<Node> findFirstFunc(Node cur) {
         LinkedList<Node> queue = new LinkedList<>();
         queue.add(cur);
 
         while (!queue.isEmpty()) {
             cur = queue.poll();
-            if (cur.getClass().getSimpleName().equals(type))
+            if (cur.getClass().getSimpleName().equals("MethodDeclaration"))
                 return Optional.of(cur);
             queue.addAll(cur.getChildNodes());
         }
         return Optional.empty();
     }
 
-    static ArrayList<Node> BFSAll(Node cur, Set<String> types) {
-        ArrayList<Node> result = new ArrayList<>();
+    static ArrayList<Pair<Node, Mutable>> findAllMutable(Node cur) {
+        ArrayList<Pair<Node, Mutable>> result = new ArrayList<>();
         LinkedList<Node> queue = new LinkedList<>();
         queue.add(cur);
 
         while (!queue.isEmpty()) {
             cur = queue.poll();
-            if (types.contains(cur.getClass().getSimpleName()))
-                result.add(cur);
+            for (Mutable mutable : config.mutableSegments) {
+                if (mutable.isThisType(cur)) {
+                    result.add(new Pair<>(cur, mutable));
+                }
+            }
             queue.addAll(cur.getChildNodes());
         }
         return result;
     }
-}
 
+}

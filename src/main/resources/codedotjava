@@ -1,5 +1,8 @@
 class MyClass {
     public static void main(String[] args) {
         boolean a = true && true || false;
+        boolean b = a && true || false;
+        String c = 0;
+        int b = 3 - 213 + c;
     }
 }

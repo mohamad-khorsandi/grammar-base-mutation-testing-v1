@@ -1,10 +1,12 @@
 package ast_tree;
+import code_generation.Variable;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+
 
 public class AstTreeGenerator {
     private static Node treeParent = null;
@@ -42,3 +44,4 @@ public class AstTreeGenerator {
         return simpleTreeParent;
     }
 }
+
