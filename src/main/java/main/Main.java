@@ -1,10 +1,12 @@
+package main;
+
 import ast_tree.AstTreeGenerator;
 import code_generation.RandomCodeGenerator;
+import com.github.javaparser.Position;
+import com.github.javaparser.Range;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.utils.Pair;
-import config.Config;
 import mutation.*;
-
 
 import java.io.IOException;
 import java.util.*;
@@ -12,7 +14,8 @@ import java.util.*;
 
 public class Main {
     static Random random = new Random();
-    static RandomCodeGenerator randomCodeGenerator;
+    public static RandomCodeGenerator randomCodeGenerator;
+    public static HashMap<Node, String> NodeMapping = new HashMap<>();
 
     public static void main(String[] args) throws IOException {
         Node treeParent = AstTreeGenerator.getTreeParent();
@@ -23,20 +26,25 @@ public class Main {
         Node funcParent = findFirstFunc(treeParent)
                 .orElseThrow(() -> new RuntimeException("there is no method"));
 
-        randomCodeGenerator = new RandomCodeGenerator(funcParent);
+        randomCodeGenerator = new RandomCodeGenerator(treeParent);
 
         ArrayList<Pair<Node, Mutable>> availMutableSegments = findAllMutable(funcParent);
 
-        report(availMutableSegments);
+//        report(availMutableSegments);
 
         Pair<Node, Mutable> mutationTarget = getRandomElement(availMutableSegments);
 
         mutationTarget.b.mutate(mutationTarget.a);
 
         // regenerate code from tree
+        for (int i = 0; i < 10; i++) {
+            String result = randomCodeGenerator.generate("<integer_expr>", "int",
+                    new Range(new Position(4,17), new Position(4,22)));
+            System.out.println(result);
+        }
     }
 
-    public static <T> T getRandomElement(ArrayList<T> list) {
+    private static <T> T getRandomElement(ArrayList<T> list) {
         int randomIndex = random.nextInt(list.size());
 
         return list.get(randomIndex);

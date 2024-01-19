@@ -7,10 +7,12 @@ import java.util.*;
 
 import com.github.javaparser.Range;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import config.Config;
-
+import main.Config;
+//todo class block
+//todo handle not available variable
 
 public class RandomCodeGenerator {
     private final GrammarParser grammarParser;
@@ -20,12 +22,11 @@ public class RandomCodeGenerator {
         findVariablesRanges(treeParent);
         List<String> grammarRules = Files.readAllLines(Path.of(Config.grammarFilePath));
         this.grammarParser = new GrammarParser(grammarRules, "::=", variables);
-//        generateRandomExpression(startTerminal, type, range);
     }
 
     private Range findVariableRange(Node node) {
-        Node parent = node.getParentNode().orElse(null);
-        while (!parent.getClass().equals(BlockStmt.class)) {
+        Node parent = node.getParentNode().orElseThrow();
+        while (!(parent instanceof BlockStmt)) { //todo
             parent = parent.getParentNode().orElse(null);
         }
         return parent.getRange().orElse(null);
@@ -47,10 +48,10 @@ public class RandomCodeGenerator {
     }
 
     // Method to generate a random expression
-    private void generateRandomExpression(String startTerminal, String type, Range range) {
+    public String generate(String startTerminal, String type, Range range) {
         String[] result = generateExpression(startTerminal, type, range);
-        System.out.println("Generated Expression: " + result[0].replaceAll("'","").replaceAll("\"", ""));
-        System.out.println("Derivation Path: " + result[1]);
+//        System.out.println("Derivation Path: " + result[1]);
+        return result[0].replaceAll("'","").replaceAll("\"", "");
     }
 
     // Recursive method to generate an expression
@@ -75,7 +76,7 @@ public class RandomCodeGenerator {
                     if ("<name>".equals(symbol) && !nameReplaced && !grammarParser.getVariables().isEmpty()) {
                         ArrayList<Variable> validVariables = new ArrayList<Variable>();
                         for (Variable v: grammarParser.getVariables()) {
-                            if (v.type.equals(type) && v.range.equals(range)) {
+                            if (v.type.equals(type) && range.contains(v.range)) {
                                 validVariables.add(v);
                             }
                         }

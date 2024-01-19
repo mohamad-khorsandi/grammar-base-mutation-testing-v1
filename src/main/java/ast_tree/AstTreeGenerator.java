@@ -4,6 +4,8 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
+import main.Config;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
@@ -13,7 +15,7 @@ public class AstTreeGenerator {
     private static SimpleNode simpleTreeParent = null;
 
     private static void generateAst() throws FileNotFoundException {
-        String path = "src/main/resources/code.java";
+        String path = Config.srcCodeFilePath;
 
         JavaParser javaParser = new JavaParser();
         ParseResult<CompilationUnit> cu = javaParser.parse(new FileInputStream(path), StandardCharsets.UTF_8);
