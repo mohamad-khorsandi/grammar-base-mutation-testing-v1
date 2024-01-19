@@ -15,10 +15,10 @@ public class Main {
         Node treeParent = AstTreeGenerator.getTreeParent();
 
         if (treeParent.getParsed().equals(Node.Parsedness.UNPARSABLE))
-            throw new RuntimeException("input code can not be compiled");
+            throw new RuntimeException("Input code can not be compiled!");
 
         Node funcParent = findFirstFunc(treeParent)
-                .orElseThrow(() -> new RuntimeException("there is no method"));
+                .orElseThrow(() -> new RuntimeException("There is no method"));
 
         ArrayList<Pair<Node, Mutable>> availMutableSegments = findAllMutable(funcParent);
 
@@ -68,7 +68,7 @@ public class Main {
     }
 
     static void report(ArrayList<Pair<Node, Mutable>> availMutableSegments) {
-        System.out.println("possible mutations:");
+        System.out.println("Possible Mutations:");
         for (var a : availMutableSegments) {
             System.out.println(a.a + " (" + a.b.getClass().getSimpleName() + ")");
         }

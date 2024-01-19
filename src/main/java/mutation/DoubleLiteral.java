@@ -1,8 +1,12 @@
 package mutation;
 
+import code_generation.RandomCodeGenerator;
+import com.github.javaparser.Range;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
+
+import java.io.IOException;
 
 public class DoubleLiteral implements Mutable {
 
