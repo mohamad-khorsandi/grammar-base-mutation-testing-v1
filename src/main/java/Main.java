@@ -1,11 +1,14 @@
 import ast_tree.AstTreeGenerator;
 import code_generation.RandomCodeGenerator;
+import com.github.javaparser.Position;
+import com.github.javaparser.Range;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import mutation.Operator;
 
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 
@@ -22,6 +25,14 @@ public class Main {
         // regenerate code from tree
 
         System.out.println();
+        try {
+            String type = "boolean";
+            Range range = new Range(new Position(2, 44), new Position(15, 5));
+            RandomCodeGenerator r = new RandomCodeGenerator(treeParent, "src/main/resources/grammar", "<expr>", type, range);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
     static Node chooseTreeSegment(Node treeParent) {
         Node funcParent = BFSFirst(treeParent, "MethodDeclaration")
