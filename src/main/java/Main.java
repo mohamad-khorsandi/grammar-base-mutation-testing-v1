@@ -1,17 +1,20 @@
 import ast_tree.AstTreeGenerator;
+import code_generation.RandomCodeGenerator;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.utils.Pair;
+import config.Config;
 import mutation.*;
 
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 
 public class Main {
-    static Config config = new Config();
     static Random random = new Random();
-    public static void main(String[] args) throws FileNotFoundException {
+    static RandomCodeGenerator randomCodeGenerator;
+
+    public static void main(String[] args) throws IOException {
         Node treeParent = AstTreeGenerator.getTreeParent();
 
         if (treeParent.getParsed().equals(Node.Parsedness.UNPARSABLE))
@@ -19,6 +22,8 @@ public class Main {
 
         Node funcParent = findFirstFunc(treeParent)
                 .orElseThrow(() -> new RuntimeException("there is no method"));
+
+        randomCodeGenerator = new RandomCodeGenerator(funcParent);
 
         ArrayList<Pair<Node, Mutable>> availMutableSegments = findAllMutable(funcParent);
 
@@ -57,7 +62,7 @@ public class Main {
 
         while (!queue.isEmpty()) {
             cur = queue.poll();
-            for (Mutable mutable : config.mutableSegments) {
+            for (Mutable mutable : Config.mutableSegments) {
                 if (mutable.isThisType(cur)) {
                     result.add(new Pair<>(cur, mutable));
                 }

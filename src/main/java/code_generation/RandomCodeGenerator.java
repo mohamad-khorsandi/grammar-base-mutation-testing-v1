@@ -9,17 +9,18 @@ import com.github.javaparser.Range;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import config.Config;
 
 
 public class RandomCodeGenerator {
     private final GrammarParser grammarParser;
     ArrayList<Variable> variables = new ArrayList<>();
 
-    public RandomCodeGenerator(Node treeParent, String grammarFilePath, String startTerminal, String type, Range range) throws IOException {
+    public RandomCodeGenerator(Node treeParent) throws IOException {
         findVariablesRanges(treeParent);
-        List<String> grammarRules = Files.readAllLines(Path.of(grammarFilePath));
+        List<String> grammarRules = Files.readAllLines(Path.of(Config.grammarFilePath));
         this.grammarParser = new GrammarParser(grammarRules, "::=", variables);
-        generateRandomExpression(startTerminal, type, range);
+//        generateRandomExpression(startTerminal, type, range);
     }
 
     private Range findVariableRange(Node node) {

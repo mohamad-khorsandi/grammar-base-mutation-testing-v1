@@ -1,10 +1,14 @@
-import mutation.*;
+package config;
 
+import mutation.*;
 import java.util.Set;
 
 public class Config {
 
-    public Set<Mutable> mutableSegments = Set.of(
+
+    static public String grammarFilePath = "src/main/resources/grammar";
+
+    static public Set<Mutable> mutableSegments = Set.of(
             new BooleanExpression(),
             new BooleanLiteral(),
             new DoubleLiteral(),
