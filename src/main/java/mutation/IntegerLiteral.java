@@ -1,9 +1,9 @@
 package mutation;
 
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 
-public class VarName implements Mutable {
+public class IntegerLiteral implements Mutable{
     @Override
     public String mutate(Node node) {
         return null;
@@ -11,6 +11,6 @@ public class VarName implements Mutable {
 
     @Override
     public boolean isThisType(Node node) {
-        return node instanceof NameExpr;
+        return node instanceof IntegerLiteralExpr;
     }
 }

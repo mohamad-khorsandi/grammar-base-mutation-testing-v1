@@ -13,7 +13,7 @@ public class AstTreeGenerator {
     private static SimpleNode simpleTreeParent = null;
 
     private static void generateAst() throws FileNotFoundException {
-        String path = "src/main/resources/codedotjava";
+        String path = "src/main/resources/code.java";
 
         JavaParser javaParser = new JavaParser();
         ParseResult<CompilationUnit> cu = javaParser.parse(new FileInputStream(path), StandardCharsets.UTF_8);

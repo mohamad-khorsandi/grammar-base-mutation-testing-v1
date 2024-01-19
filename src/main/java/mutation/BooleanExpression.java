@@ -15,7 +15,7 @@ public class BooleanExpression implements Mutable {
     public boolean isThisType(Node node) {
         if (node instanceof BinaryExpr) {
             String op = ((BinaryExpr) node).getOperator().asString();
-            Set<String> intOp = Set.of("&&", "||", ">=", "==", "<=", "!=");
+            Set<String> intOp = Set.of("&&", "||", ">=", "==", "<=", "!=", ">", "<");
             return intOp.contains(op);
         }
         return false;

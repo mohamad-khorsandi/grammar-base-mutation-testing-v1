@@ -14,22 +14,27 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         Node treeParent = AstTreeGenerator.getTreeParent();
 
+        if (treeParent.getParsed().equals(Node.Parsedness.UNPARSABLE))
+            throw new RuntimeException("input code can not be compiled");
+
         Node funcParent = findFirstFunc(treeParent)
                 .orElseThrow(() -> new RuntimeException("there is no method"));
 
         ArrayList<Pair<Node, Mutable>> availMutableSegments = findAllMutable(funcParent);
-        System.out.println("here are available mutations");
-        for (var a : availMutableSegments) {
-            System.out.println(a.a + " (" + a.b.getClass().getSimpleName() + ")");
-        }
-        int randomIndex = random.nextInt(availMutableSegments.size());
 
-        Pair<Node, Mutable> mutationTarget = availMutableSegments.get(randomIndex);
+        report(availMutableSegments);
+
+        Pair<Node, Mutable> mutationTarget = getRandomElement(availMutableSegments);
 
         mutationTarget.b.mutate(mutationTarget.a);
 
-        System.out.println();
         // regenerate code from tree
+    }
+
+    public static <T> T getRandomElement(ArrayList<T> list) {
+        int randomIndex = random.nextInt(list.size());
+
+        return list.get(randomIndex);
     }
 
     static Optional<Node> findFirstFunc(Node cur) {
@@ -62,4 +67,10 @@ public class Main {
         return result;
     }
 
+    static void report(ArrayList<Pair<Node, Mutable>> availMutableSegments) {
+        System.out.println("possible mutations:");
+        for (var a : availMutableSegments) {
+            System.out.println(a.a + " (" + a.b.getClass().getSimpleName() + ")");
+        }
+    }
 }
