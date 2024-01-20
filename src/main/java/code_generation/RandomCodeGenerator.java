@@ -101,10 +101,7 @@ public class RandomCodeGenerator {
                 } else {
                     subResult = symbol;
                 }
-                if(subResult.equals(" ")){
-                    throw new RuntimeException();
-                }
-                result.append(subResult).append(" ");
+                result.append(subResult);
             }
         }
         return Optional.of(result.toString());
