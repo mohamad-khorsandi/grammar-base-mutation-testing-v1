@@ -62,7 +62,7 @@ public class RandomCodeGenerator {
             productions = productions.stream().filter(s -> !s.contains("<name>"))
                     .collect(Collectors.toList());
 
-        if (productions == null || productions.isEmpty())
+        if (productions.isEmpty())
             throw new RuntimeException("no valid generation rule found for " +
                     "(this may mean that there was no valid variable to replace <name> and no alternative grammar):" + nonTerminal);
 
