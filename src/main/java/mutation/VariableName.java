@@ -14,8 +14,8 @@ public class VariableName extends Mutable {
 
     @Override
     public String mutate(Node node) {
-        
-        return Main.randomCodeGenerator.generate(startTerminal, null, node.getRange().orElseThrow());;
+
+        return Main.randomCodeGenerator.generate(startTerminal, null, node.getRange().orElseThrow());
     }
 
     @Override
