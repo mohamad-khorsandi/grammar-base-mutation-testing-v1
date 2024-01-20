@@ -2,13 +2,13 @@ package mutation;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.BinaryExpr;
+import main.Main;
 
 import java.util.Set;
 
-public class BooleanExpression implements Mutable {
-    @Override
-    public String mutate(Node node) {
-        return null;
+public class BooleanExpression extends Mutable {
+    public BooleanExpression(String startTerminal, String forcedType) {
+        super(startTerminal, forcedType);
     }
 
     @Override

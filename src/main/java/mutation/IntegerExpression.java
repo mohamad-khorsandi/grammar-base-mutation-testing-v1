@@ -2,13 +2,13 @@ package mutation;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.BinaryExpr;
+import main.Main;
 
 import java.util.Set;
 
-public class IntegerExpression implements Mutable {
-    @Override
-    public String mutate(Node node) {
-        return null;
+public class IntegerExpression extends Mutable {
+    public IntegerExpression(String startTerminal, String forcedType) {
+        super(startTerminal, forcedType);
     }
 
     @Override
