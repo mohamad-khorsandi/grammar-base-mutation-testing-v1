@@ -4,6 +4,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import main.Main;
 
+import java.util.Optional;
 import java.util.Set;
 
 public class BooleanExpression extends Mutable {

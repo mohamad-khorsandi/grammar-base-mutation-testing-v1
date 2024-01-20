@@ -1,6 +1,6 @@
 <operator> ::= "+" | "-" | "*" | "==" | "!=" | "<" | ">" | "<=" | ">=" | "&&" | "||"
 <integer_expr> ::= <operandInteger> <operator> <operandInteger> | <operandInteger>
-<operandInteger> ::= <name> | <literal> | <integer_expr>
+<operandInteger> ::= <name> | <IntegerLiteral> | <integer_expr>
 <BooleanLiteral> ::= "true" | "false"
 <BooleanExpression> ::= <IntegerBaseBooleanExpression> | <BooleanBaseBooleanExpression>
 <IntegerBaseBooleanExpression> ::= <integer_expr> <BooleanComparison> <integer_expr>
@@ -8,3 +8,6 @@
 <BooleanOperand> ::= <name> | <BooleanLiteral> | <BooleanExpression>
 <BooleanOperator> ::= "==" | "!=" | "&&" | "||"
 <BooleanComparison> ::= "==" | "!=" | "<" | ">" | "<=" | ">="
+
+<IntegerLiteral>::= "1" | "2"
+

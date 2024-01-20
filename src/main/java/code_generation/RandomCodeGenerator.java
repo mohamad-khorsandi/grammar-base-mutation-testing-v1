@@ -51,31 +51,33 @@ public class RandomCodeGenerator {
     // Method to generate a random expression
     public String generate(String startTerminal, String type, Range range) {
         ArrayList<Variable> validVariables = getValidVariables(type, range);
-        String result = generateMultiRule(startTerminal, validVariables);
-        return result.replaceAll("'","").replaceAll("\"", "");
+        var result = generateMultiRule(startTerminal, validVariables);
+        return result.map(s -> s.replaceAll("'", "").replaceAll("\"", ""))
+                .orElseThrow(() -> new RuntimeException("could not find valid variables"));
     }
 
     // Recursive method to generate an expression
-    private String generateMultiRule(String nonTerminal, ArrayList<Variable> validVariables) {
-        List<String> productions = grammarParser.getProductions(nonTerminal).orElseThrow();
-        if (validVariables.isEmpty())
-            productions = productions.stream().filter(s -> !s.contains("<name>"))
-                    .collect(Collectors.toList());
+    private Optional<String> generateMultiRule(String nonTerminal, ArrayList<Variable> validVariables) {
+        List<String> productions = grammarParser.getProductions(nonTerminal).orElseThrow(() ->
+                new RuntimeException("for :" + nonTerminal));
+        while (!productions.isEmpty()) {
+            int selectedIndex = random.nextInt(productions.size());
 
-        if (productions.isEmpty())
-            throw new RuntimeException("no valid generation rule found for " +
-                    "(this may mean that there was no valid variable to replace <name> and no alternative grammar):" + nonTerminal);
+            String selectedProduction = productions.get(selectedIndex);
 
-        int selectedIndex = random.nextInt(productions.size());
+            var optionalString = generateSingleRule(selectedProduction, validVariables);
+            if (optionalString.isPresent()) {
+                return Optional.of(optionalString.get().trim().replaceAll("\"", ""));
+            } else {
+                if (productions.contains(selectedProduction))
+                    productions.remove(selectedProduction);
+            }
+        }
+        return Optional.empty();
 
-        String selectedProduction = productions.get(selectedIndex);
-
-        StringBuilder result = generateSingleRule(selectedProduction, validVariables);
-
-        return result.toString().trim().replaceAll("\"", "");
     }
 
-    private StringBuilder generateSingleRule(String selectedProduction, ArrayList<Variable> validVariables) {
+    private Optional<String> generateSingleRule(String selectedProduction, ArrayList<Variable> validVariables) {
         String[] symbols = selectedProduction.split("\\s+");
         StringBuilder result = new StringBuilder();
 
@@ -84,20 +86,25 @@ public class RandomCodeGenerator {
             if (!symbol.equals(grammarParser.getSeparator()) && !symbol.equals("|")) {
                 // Replace "<name>" if needed
                 if ("<name>".equals(symbol) && !nameReplaced && !grammarParser.getVariables().isEmpty()) {
+                    if (validVariables.isEmpty())
+                        return Optional.empty();
                     symbol = validVariables.get(random.nextInt(validVariables.size())).name;
                     nameReplaced = true;
                 }
                 // Recursive call to generateExpression
                 String subResult;
                 if (symbol.startsWith("<")) {
-                    subResult = generateMultiRule(symbol, validVariables);
+                    var tmpRes = generateMultiRule(symbol, validVariables);
+                    if (tmpRes.isEmpty())
+                        return Optional.empty();
+                    subResult = tmpRes.get();
                 } else {
                     subResult = symbol;
                 }
                 result.append(subResult).append(" ");
             }
         }
-        return result;
+        return Optional.of(result.toString());
     }
 
     ArrayList<Variable> getValidVariables(String type, Range range) {
