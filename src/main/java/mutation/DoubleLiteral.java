@@ -5,15 +5,13 @@ import com.github.javaparser.Range;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
+import main.Main;
 
 import java.io.IOException;
 
-public class DoubleLiteral implements Mutable {
-
-    @Override
-    public String mutate(Node node) {
-        String grammar = "grammar";
-        return "";
+public class DoubleLiteral extends Mutable {
+    public DoubleLiteral(String startTerminal, String forcedType) {
+        super(startTerminal, forcedType);
     }
 
     @Override

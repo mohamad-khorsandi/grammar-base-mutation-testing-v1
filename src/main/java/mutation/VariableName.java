@@ -3,13 +3,19 @@ package mutation;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import main.Main;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class VariableExpression implements Mutable {
+public class VariableName extends Mutable {
+    public VariableName(String startTerminal, String forcedType) {
+        super(startTerminal, forcedType);
+    }
+
     @Override
     public String mutate(Node node) {
-        return null;
+        
+        return Main.randomCodeGenerator.generate(startTerminal, null, node.getRange().orElseThrow());;
     }
 
     @Override

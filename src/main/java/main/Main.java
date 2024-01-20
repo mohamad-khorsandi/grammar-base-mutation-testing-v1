@@ -7,7 +7,6 @@ import com.github.javaparser.Range;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.utils.Pair;
 import mutation.*;
-
 import java.io.IOException;
 import java.util.*;
 
@@ -15,6 +14,7 @@ import java.util.*;
 public class Main {
     static Random random = new Random();
     public static RandomCodeGenerator randomCodeGenerator;
+    public static Pair<Node, String> mutatedNode;
     public static HashMap<Node, String> NodeMapping = new HashMap<>();
 
     public static void main(String[] args) throws IOException {
