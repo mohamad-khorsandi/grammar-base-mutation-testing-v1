@@ -51,7 +51,7 @@ public class MainUtils {
     }
 
     static void report(ArrayList<Pair<Node, Mutable>> availMutableSegments) {
-        System.out.println("Possible Mutations:");
+        System.out.println("\n-------------------------Possible Mutations:");
         for (var a : availMutableSegments) {
             printMutationSegment(a);
         }
@@ -63,7 +63,7 @@ public class MainUtils {
 
     static String reproduceCode(String groundString, Range r, String newSegment) {
         int beginInd = findIndexForPosition(groundString, r.begin);
-        int endInd = findIndexForPosition(groundString, r.end);
+        int endInd = findIndexForPosition(groundString, r.end) + 1;
         if (endInd == -1 || beginInd == -1){
             throw new RuntimeException();
         }
