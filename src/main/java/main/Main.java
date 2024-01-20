@@ -24,7 +24,9 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         String groundString = Files.readString(Path.of(Config.srcCodeFilePath));
-        applyMutation(groundString);
+        String resultCode = applyMutation(groundString).orElseThrow(() -> new RuntimeException("no place to mutate"));
+        System.out.println("\nresultCode");
+        System.out.println(resultCode);
     }
 
     public static Optional<String> applyMutation(String groundString) throws IOException {
@@ -41,10 +43,8 @@ public class Main {
         ArrayList<Pair<Node, Mutable>> availMutableSegments = findAllMutable(funcParent);
 
         report(availMutableSegments);
-        if (availMutableSegments.isEmpty()) {
-            System.out.println("no place to mutate");
+        if (availMutableSegments.isEmpty())
             return Optional.empty();
-        }
 
         Pair<Node, Mutable> mutationTarget = getRandomElement(availMutableSegments);
 
@@ -53,7 +53,8 @@ public class Main {
 
         String mutatedSegment = mutationTarget.b.mutate(mutationTarget.a);
         System.out.println(mutatedSegment);
-        return Optional.empty();
+
+        return Optional.of(reproduceCode(groundString, mutationTarget.a.getRange().orElseThrow(), mutatedSegment));
     }
 
 }
