@@ -8,12 +8,11 @@ public class Config {
     static public String srcCodeFilePath = "src/main/resources/code.java";
 
     static public Set<Mutable> mutableSegments = Set.of(
-//            new BooleanExpression("<BooleanExpression>", "boolean"),
+            new BooleanExpression(null, null)
 //            new BooleanLiteral("<BooleanLiteral>", null),
 //            new DoubleLiteral("<DoubleLiteral>", null),
 //            new IntegerExpression("<IntegerExpression>", "int"),
-//            new VariableName("<VariableName>", null),
+//            new VariableName("<name>", null),
 //            new IntegerLiteral("<IntegerLiteral>", null)
-            new BooleanExpression("<test>", null)
     );
 }
