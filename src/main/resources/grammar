@@ -1,13 +1,2 @@
-<operator> ::= "+" | "-" | "*" | "==" | "!=" | "<" | ">" | "<=" | ">=" | "&&" | "||"
-<integer_expr> ::= <operandInteger> <operator> <operandInteger> | <operandInteger>
-<operandInteger> ::= <name> | <IntegerLiteral> | <integer_expr>
-<BooleanLiteral> ::= "true" | "false"
-<BooleanExpression> ::= <IntegerBaseBooleanExpression> | <BooleanBaseBooleanExpression>
-<IntegerBaseBooleanExpression> ::= <integer_expr> <BooleanComparison> <integer_expr>
-<BooleanBaseBooleanExpression> ::= <BooleanOperand> <BooleanOperator> <BooleanOperand>
-<BooleanOperand> ::= <name> | <BooleanLiteral> | <BooleanExpression>
-<BooleanOperator> ::= "==" | "!=" | "&&" | "||"
-<BooleanComparison> ::= "==" | "!=" | "<" | ">" | "<=" | ">="
-
-<IntegerLiteral>::= "1" | "2"
-
+<BooleanLiteral>::= "true" | "false"
+<IntegerLiteral>::= "1" | "2" | "3" | "4"

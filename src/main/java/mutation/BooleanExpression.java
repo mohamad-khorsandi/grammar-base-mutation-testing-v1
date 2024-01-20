@@ -18,10 +18,10 @@ public class BooleanExpression extends Mutable {
         String st;
         String type;
         if (randomValue < 0.5){
-            st = "<IntegerBaseBooleanExpression>";
+            st = "<Int2BoolExp>";
             type = "int";
         }else{
-            st = "<BooleanBaseBooleanExpression>";
+            st = "<Bool2BoolExp>";
             type = "boolean";
         }
         return Main.randomCodeGenerator.generate(st, type, node.getRange().orElseThrow());
