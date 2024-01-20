@@ -7,10 +7,10 @@ import java.util.List;
 
 public class MutationTestRunner {
     public static void main(String[] args) {
-        String resourcesFolder = "src/test/java";
+        String resourcesFolder = "src/test/resources";
 
         List<Class<?>> testClasses = getTestClasses(resourcesFolder);
-
+        
         runTests(testClasses);
     }
 
@@ -18,7 +18,7 @@ public class MutationTestRunner {
         List<Class<?>> testClasses = new ArrayList<>();
 
         File folder = new File(folderPath);
-        File[] files = folder.listFiles((dir, name) -> name.endsWith(".java"));
+        File[] files = folder.listFiles((dir, name) -> name.endsWith("Test.java"));
 
         if (files != null) {
             for (File file : files) {
