@@ -7,18 +7,28 @@ import com.github.javaparser.Range;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.utils.Pair;
 import mutation.*;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
+
+import static main.MainUtils.*;
 
 
 public class Main {
-    static Random random = new Random();
     public static RandomCodeGenerator randomCodeGenerator;
     public static Pair<Node, String> mutatedNode;
     public static HashMap<Node, String> NodeMapping = new HashMap<>();
 
     public static void main(String[] args) throws IOException {
-        Node treeParent = AstTreeGenerator.getTreeParent();
+        String groundString = Files.readString(Path.of(Config.srcCodeFilePath));
+        applyMutation(groundString);
+    }
+
+    public static Optional<String> applyMutation(String groundString) throws IOException {
+        Node treeParent = new AstTreeGenerator(groundString).getTreeParent();
 
         if (treeParent.getParsed().equals(Node.Parsedness.UNPARSABLE))
             throw new RuntimeException("Input code can not be compiled!");
@@ -30,60 +40,20 @@ public class Main {
 
         ArrayList<Pair<Node, Mutable>> availMutableSegments = findAllMutable(funcParent);
 
-//        report(availMutableSegments);
+        report(availMutableSegments);
+        if (availMutableSegments.isEmpty()) {
+            System.out.println("no place to mutate");
+            return Optional.empty();
+        }
 
         Pair<Node, Mutable> mutationTarget = getRandomElement(availMutableSegments);
 
-        mutationTarget.b.mutate(mutationTarget.a);
+        System.out.print("mutation target : ");
+        MainUtils.printMutationSegment(mutationTarget);
 
-        // regenerate code from tree
-        for (int i = 0; i < 10; i++) {
-            String result = randomCodeGenerator.generate("<integer_expr>", "int",
-                    new Range(new Position(4,17), new Position(4,22)));
-            System.out.println(result);
-        }
-    }
-
-    private static <T> T getRandomElement(ArrayList<T> list) {
-        int randomIndex = random.nextInt(list.size());
-
-        return list.get(randomIndex);
-    }
-
-    static Optional<Node> findFirstFunc(Node cur) {
-        LinkedList<Node> queue = new LinkedList<>();
-        queue.add(cur);
-
-        while (!queue.isEmpty()) {
-            cur = queue.poll();
-            if (cur.getClass().getSimpleName().equals("MethodDeclaration"))
-                return Optional.of(cur);
-            queue.addAll(cur.getChildNodes());
-        }
+        String mutatedSegment = mutationTarget.b.mutate(mutationTarget.a);
+        System.out.println(mutatedSegment);
         return Optional.empty();
     }
 
-    static ArrayList<Pair<Node, Mutable>> findAllMutable(Node cur) {
-        ArrayList<Pair<Node, Mutable>> result = new ArrayList<>();
-        LinkedList<Node> queue = new LinkedList<>();
-        queue.add(cur);
-
-        while (!queue.isEmpty()) {
-            cur = queue.poll();
-            for (Mutable mutable : Config.mutableSegments) {
-                if (mutable.isThisType(cur)) {
-                    result.add(new Pair<>(cur, mutable));
-                }
-            }
-            queue.addAll(cur.getChildNodes());
-        }
-        return result;
-    }
-
-    static void report(ArrayList<Pair<Node, Mutable>> availMutableSegments) {
-        System.out.println("Possible Mutations:");
-        for (var a : availMutableSegments) {
-            System.out.println(a.a + " (" + a.b.getClass().getSimpleName() + ")");
-        }
-    }
 }

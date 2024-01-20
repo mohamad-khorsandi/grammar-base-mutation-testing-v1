@@ -1,5 +1,6 @@
 package mutation;
 
+import code_generation.Variable;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -14,8 +15,10 @@ public class VariableName extends Mutable {
 
     @Override
     public String mutate(Node node) {
-
-        return Main.randomCodeGenerator.generate(startTerminal, null, node.getRange().orElseThrow());
+        String varName = ((NameExpr) node).getName().toString();
+        String varType = Main.randomCodeGenerator.variables.stream()
+                .filter(v-> v.getName().equals(varName)).findFirst().orElseThrow().getType();
+        return Main.randomCodeGenerator.generate(startTerminal, varType, node.getRange().orElseThrow());
     }
 
     @Override

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.Range;
 import com.github.javaparser.ast.Node;
@@ -11,12 +12,12 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import main.Config;
-//todo class block
-//todo handle not available variable
+
 
 public class RandomCodeGenerator {
     private final GrammarParser grammarParser;
-    ArrayList<Variable> variables = new ArrayList<>();
+    public ArrayList<Variable> variables = new ArrayList<>();
+    private final Random random = new Random();
 
     public RandomCodeGenerator(Node treeParent) throws IOException {
         findVariablesRanges(treeParent);
@@ -26,8 +27,8 @@ public class RandomCodeGenerator {
 
     private Range findVariableRange(Node node) {
         Node parent = node.getParentNode().orElseThrow();
-        while (!(parent instanceof BlockStmt)) { //todo
-            parent = parent.getParentNode().orElse(null);
+        while (!(parent instanceof BlockStmt || parent instanceof ClassOrInterfaceDeclaration)) { //todo
+            parent = parent.getParentNode().orElseThrow();
         }
         return parent.getRange().orElse(null);
     }
@@ -49,93 +50,66 @@ public class RandomCodeGenerator {
 
     // Method to generate a random expression
     public String generate(String startTerminal, String type, Range range) {
-        String[] result = generateExpression(startTerminal, type, range);
-//        System.out.println("Derivation Path: " + result[1]);
-        return result[0].replaceAll("'","").replaceAll("\"", "");
+        ArrayList<Variable> validVariables = getValidVariables(type, range);
+        String result = generateMultiRule(startTerminal, validVariables);
+        return result.replaceAll("'","").replaceAll("\"", "");
     }
 
     // Recursive method to generate an expression
-    private String[] generateExpression(String nonTerminal, String type, Range range) {
+    private String generateMultiRule(String nonTerminal, ArrayList<Variable> validVariables) {
         List<String> productions = grammarParser.getProductions(nonTerminal);
-        if (productions == null || productions.isEmpty()) {
-            return new String[]{nonTerminal, nonTerminal};
-        } else {
-            Random random = new Random();
-            int selectedIndex = random.nextInt(productions.size());
-            String selectedProduction = productions.get(selectedIndex);
+        if (validVariables.isEmpty())
+            productions = productions.stream().filter(s -> !s.contains("<name>"))
+                    .collect(Collectors.toList());
 
-            String[] symbols = selectedProduction.split("\\s+");
-            StringBuilder result = new StringBuilder();
-            StringBuilder derivationPath = new StringBuilder();
+        if (productions == null || productions.isEmpty())
+            throw new RuntimeException("no valid generation rule found for " +
+                    "(this may mean that there was no valid variable to replace <name> and no alternative grammar):" + nonTerminal);
 
-            boolean nameReplaced = false;
+        int selectedIndex = random.nextInt(productions.size());
 
-            for (String symbol : symbols) {
-                if (!symbol.equals(grammarParser.getSeparator()) && !symbol.equals("|")) {
-                    // Replace "<name>" if needed
-                    if ("<name>".equals(symbol) && !nameReplaced && !grammarParser.getVariables().isEmpty()) {
-                        ArrayList<Variable> validVariables = new ArrayList<Variable>();
-                        for (Variable v: grammarParser.getVariables()) {
-                            if (v.type.equals(type) && range.contains(v.range)) {
-                                validVariables.add(v);
-                            }
-                        }
-                        Random rnd = new Random();
-                        symbol =  validVariables.get(rnd.nextInt(validVariables.size())).name;
-                        nameReplaced = true;
-                    }
-                    // Recursive call to generateExpression
-                    String[] subResult = generateExpression(symbol, type, range);
-                    result.append(subResult[0]).append(" ");
-                    derivationPath.append(subResult[1]).append(" ");
+        String selectedProduction = productions.get(selectedIndex);
+
+        StringBuilder result = generateSingleRule(selectedProduction, validVariables);
+
+        return result.toString().trim().replaceAll("\"", "");
+    }
+
+    private StringBuilder generateSingleRule(String selectedProduction, ArrayList<Variable> validVariables) {
+        String[] symbols = selectedProduction.split("\\s+");
+        StringBuilder result = new StringBuilder();
+
+        boolean nameReplaced = false;
+        for (String symbol : symbols) {
+            if (!symbol.equals(grammarParser.getSeparator()) && !symbol.equals("|")) {
+                // Replace "<name>" if needed
+                if ("<name>".equals(symbol) && !nameReplaced && !grammarParser.getVariables().isEmpty()) {
+                    symbol = validVariables.get(random.nextInt(validVariables.size())).name;
+                    nameReplaced = true;
                 }
+                // Recursive call to generateExpression
+                String subResult;
+                if (symbol.startsWith("<")) {
+                    subResult = generateMultiRule(symbol, validVariables);
+                } else {
+                    subResult = symbol;
+                }
+                result.append(subResult).append(" ");
             }
-
-            // Append the derivation path
-            derivationPath.append("[").append(nonTerminal).append(" ").append(grammarParser.getSeparator())
-                    .append(" ").append(selectedProduction).append("]");
-
-            return new String[]{result.toString().trim().replaceAll("\"", ""), derivationPath.toString().trim()};
         }
+        return result;
     }
+
+    ArrayList<Variable> getValidVariables(String type, Range range) {
+        ArrayList<Variable> validVariables = new ArrayList<>();
+        for (Variable v: grammarParser.getVariables()) {
+            if (v.type.equals(type) && v.range.contains(range)) {
+                validVariables.add(v);
+            }
+        }
+        return validVariables;
+    }
+
 }
 
 
-class GrammarParser {
-    private final List<String> grammarRules;
-    private final String separator;
-    private List<Variable> variables;
-
-    // Constructor for GrammarParser
-    public GrammarParser(List<String> grammarRules, String separator, List<Variable> variables) {
-        this.grammarRules = grammarRules;
-        this.separator = separator;
-        this.variables = variables;
-    }
-
-    // Get productions for a non-terminal
-    public List<String> getProductions(String nonTerminal) {
-        for (String rule : grammarRules) {
-            String[] parts = rule.split("\\s*" + separator + "\\s*");
-            if (parts.length == 2 && parts[0].trim().equals(nonTerminal)) {
-                return Arrays.asList(parts[1].split("\\s*\\|\\s*"));
-            }
-        }
-        return null;
-    }
-
-    // Get the separator
-    public String getSeparator() {
-        return separator;
-    }
-
-    // Get the popped names list
-    public List<Variable> getVariables() {
-        return variables;
-    }
-
-    // Set the popped names list
-    public void setVariables(List<Variable> variables) {
-        this.variables = variables;
-    }
-}

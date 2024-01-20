@@ -11,21 +11,24 @@ import java.nio.charset.StandardCharsets;
 
 
 public class AstTreeGenerator {
-    private static Node treeParent = null;
-    private static SimpleNode simpleTreeParent = null;
+    private Node treeParent = null;
+    private SimpleNode simpleTreeParent = null;
+    final private String groundString;
 
-    private static void generateAst() throws FileNotFoundException {
-        String path = Config.srcCodeFilePath;
+    public AstTreeGenerator(String groundString) {
+        this.groundString = groundString;
+    }
 
+    private void generateAst() throws FileNotFoundException {
         JavaParser javaParser = new JavaParser();
-        ParseResult<CompilationUnit> cu = javaParser.parse(new FileInputStream(path), StandardCharsets.UTF_8);
+        ParseResult<CompilationUnit> cu = javaParser.parse(this.groundString);
 
         treeParent = cu.getResult().orElseThrow();
 
         simpleTreeParent = copyTree(treeParent);
     }
 
-    private static SimpleNode copyTree(Node node) {
+    private SimpleNode copyTree(Node node) {
         SimpleNode myTreeNode = new SimpleNode(node);
         for(Node n : node.getChildNodes()) {
             myTreeNode.children.add(copyTree(n));
@@ -34,16 +37,15 @@ public class AstTreeGenerator {
         return myTreeNode;
     }
 
-    public static Node getTreeParent() throws FileNotFoundException {
-        if (treeParent == null)
-            generateAst();
+    public Node getTreeParent() {
+        if (treeParent == null) {
+            try {
+                generateAst();
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
         return treeParent;
-    }
-
-    public static SimpleNode getSimpleTreeParent() throws FileNotFoundException {
-        if (simpleTreeParent == null)
-            generateAst();
-        return simpleTreeParent;
     }
 }
 
