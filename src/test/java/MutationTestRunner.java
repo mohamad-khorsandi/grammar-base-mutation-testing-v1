@@ -7,11 +7,16 @@ import java.util.List;
 
 public class MutationTestRunner {
     public static void main(String[] args) {
+        int totalMutations = 0;
+        int killedMutations = 0;
         String resourcesFolder = "src/test/resources";
 
         List<Class<?>> testClasses = getTestClasses(resourcesFolder);
         
         runTests(testClasses);
+
+        double mutationScore = (double) killedMutations / totalMutations;
+        System.out.println("\nMutation Score: " + (mutationScore * 100) + "%");
     }
 
     private static List<Class<?>> getTestClasses(String folderPath) {
