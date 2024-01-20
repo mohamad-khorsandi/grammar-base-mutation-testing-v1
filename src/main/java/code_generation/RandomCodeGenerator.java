@@ -101,7 +101,9 @@ public class RandomCodeGenerator {
                 } else {
                     subResult = symbol;
                 }
-                if (subResult.equals(""))
+                if (true)
+                    throw new RuntimeException();
+                if (subResult.isEmpty())
                     throw new RuntimeException();
                 result.append(subResult).append(" ");
             }

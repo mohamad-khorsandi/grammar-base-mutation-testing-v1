@@ -1,5 +1,12 @@
-<BooleanLiteral>::= "true" | "false"
-<IntegerLiteral>::= "1" | "2" | "3" | "4"
-<VariableName>::= <name>
+<NumericLiteral> ::= <IntegerLiteral> | <DoubleLiteral>
 
-<Int2BoolExp>::= <boolOperand> <comparator> <boolOperand>
+<IntegerLiteral> ::= <DecimalDigit> <IntegerTail>
+<IntegerTail> ::= <DecimalDigit> <IntegerTail> | ""
+
+<DoubleLiteral> ::= <IntegerLiteral> <DecimalSuffix>
+<DecimalSuffix> ::= "." <DecimalDigit> <DecimalTail> | ""
+<DecimalTail> ::= <DecimalDigit> <DecimalTail> | ""
+
+<DecimalDigit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+
+<Int2BoolExp> ::= <>
