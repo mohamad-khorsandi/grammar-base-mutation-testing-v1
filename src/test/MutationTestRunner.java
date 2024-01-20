@@ -40,11 +40,9 @@ public class MutationTestRunner {
             System.out.println("Running tests for: " + testClass.getName());
             Result result = JUnitCore.runClasses(testClass);
 
-            // Print the test results
             System.out.println("  - Ran " + result.getRunCount() + " tests");
             System.out.println("  - Passed: " + result.wasSuccessful());
 
-            // Optionally, you can print more details about failures and errors
             for (Failure failure : result.getFailures()) {
                 System.out.println("\nFailure: " + failure.toString());
             }
