@@ -12,6 +12,21 @@ public class BooleanExpression extends Mutable {
     }
 
     @Override
+    public String mutate(Node node) {
+        double randomValue = Math.random();
+        String st;
+        String type;
+        if (randomValue < 0.5){
+            st = "<IntegerBaseBooleanExpression>";
+            type = "int";
+        }else{
+            st = "<BooleanBaseBooleanExpression>";
+            type = "boolean";
+        }
+        return Main.randomCodeGenerator.generate(st, type, node.getRange().orElseThrow());
+    }
+
+    @Override
     public boolean isThisType(Node node) {
         if (node instanceof BinaryExpr) {
             String op = ((BinaryExpr) node).getOperator().asString();

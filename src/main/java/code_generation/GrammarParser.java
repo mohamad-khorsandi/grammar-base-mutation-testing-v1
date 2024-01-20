@@ -2,6 +2,7 @@ package code_generation;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class GrammarParser {
     private final List<String> grammarRules;
@@ -16,14 +17,14 @@ public class GrammarParser {
     }
 
     // Get productions for a non-terminal
-    public List<String> getProductions(String nonTerminal) {
+    public Optional<List<String>> getProductions(String nonTerminal) {
         for (String rule : grammarRules) {
             String[] parts = rule.split("\\s*" + separator + "\\s*");
             if (parts.length == 2 && parts[0].trim().equals(nonTerminal)) {
-                return Arrays.asList(parts[1].split("\\s*\\|\\s*"));
+                return Optional.of(Arrays.asList(parts[1].split("\\s*\\|\\s*")));
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     // Get the separator

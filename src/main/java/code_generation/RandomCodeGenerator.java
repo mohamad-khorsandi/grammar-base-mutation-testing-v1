@@ -57,7 +57,7 @@ public class RandomCodeGenerator {
 
     // Recursive method to generate an expression
     private String generateMultiRule(String nonTerminal, ArrayList<Variable> validVariables) {
-        List<String> productions = grammarParser.getProductions(nonTerminal);
+        List<String> productions = grammarParser.getProductions(nonTerminal).orElseThrow();
         if (validVariables.isEmpty())
             productions = productions.stream().filter(s -> !s.contains("<name>"))
                     .collect(Collectors.toList());

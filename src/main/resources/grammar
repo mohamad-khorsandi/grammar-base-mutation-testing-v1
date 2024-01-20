@@ -1,6 +1,10 @@
-<operator>::= "+" | "-" | "*"
-<integer_expr>::= <operand> <operator> <integer_expr> | <operand>
-<operandInteger>::= <name> | <literal>
-<VariableName>::= <name>
-<test>::= "a" | <test2>
-<test2>::= "b" | "hello" "mmd"
+<operator> ::= "+" | "-" | "*" | "==" | "!=" | "<" | ">" | "<=" | ">=" | "&&" | "||"
+<integer_expr> ::= <operandInteger> <operator> <operandInteger> | <operandInteger>
+<operandInteger> ::= <name> | <literal> | <integer_expr>
+<BooleanLiteral> ::= "true" | "false"
+<BooleanExpression> ::= <IntegerBaseBooleanExpression> | <BooleanBaseBooleanExpression>
+<IntegerBaseBooleanExpression> ::= <integer_expr> <BooleanComparison> <integer_expr>
+<BooleanBaseBooleanExpression> ::= <BooleanOperand> <BooleanOperator> <BooleanOperand>
+<BooleanOperand> ::= <name> | <BooleanLiteral> | <BooleanExpression>
+<BooleanOperator> ::= "==" | "!=" | "&&" | "||"
+<BooleanComparison> ::= "==" | "!=" | "<" | ">" | "<=" | ">="
