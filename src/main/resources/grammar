@@ -1,3 +1,6 @@
 <operator>::= "+" | "-" | "*"
 <integer_expr>::= <operand> <operator> <integer_expr> | <operand>
 <operandInteger>::= <name> | <literal>
+<VariableName>::= <name>
+<test>::= "a" | <test2>
+<test2>::= "b" | "hello" "mmd"

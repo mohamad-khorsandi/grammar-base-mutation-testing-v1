@@ -12,4 +12,17 @@ public class Variable {
         this.type = type;
         this.name = name;
     }
+
+    public Range getRange() {
+        return range;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
 }
