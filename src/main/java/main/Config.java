@@ -12,7 +12,7 @@ public class Config {
 //            new BooleanLiteral("<BooleanLiteral>", null),
 //            new DoubleLiteral("<DoubleLiteral>", null),
 //            new IntegerExpression("<IntegerExpression>", "int")
-//            new VariableName("<name>", null),
-            new IntegerLiteral("<IntegerLiteral>", null)
+            new VariableName("<VariableName>", null)
+//            new IntegerLiteral("<IntegerLiteral>", null)
     );
 }

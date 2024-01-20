@@ -1,2 +1,5 @@
 <BooleanLiteral>::= "true" | "false"
 <IntegerLiteral>::= "1" | "2" | "3" | "4"
+<VariableName>::= <name>
+
+<Int2BoolExp>::= <boolOperand> <comparator> <boolOperand>
