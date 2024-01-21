@@ -1,56 +1,82 @@
+import main.Main;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
-import org.junit.runner.notification.Failure;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 public class MutationTestRunner {
+    private static int killedMutations = 0;
+    private static int totalMutations = 0;
+    static String originalCode;
+
+    private static final int NUM_ITERATIONS = 20;
+    private static final String ORIGINAL_CODE_FILE_PATH = "src/test/resources/ExampleCode.java";
+    private static final String MUTATED_CODE_FOLDER = "src/test/resources/";
+
     public static void main(String[] args) {
-        int totalMutations = 0;
-        int killedMutations = 0;
-        String resourcesFolder = "src/test/resources";
+        Set<String> uniqueMutations = new HashSet<>();
 
-        List<Class<?>> testClasses = getTestClasses(resourcesFolder);
-        
-        runTests(testClasses);
+        for (int i = 1; i <= NUM_ITERATIONS; i++) {
+            System.out.println("Running Iteration " + i);
 
-        double mutationScore = (double) killedMutations / totalMutations;
-        System.out.println("\nMutation Score: " + (mutationScore * 100) + "%");
-    }
+            originalCode = getCodeFromFile();
 
-    private static List<Class<?>> getTestClasses(String folderPath) {
-        List<Class<?>> testClasses = new ArrayList<>();
+            try {
+                Optional<String> mutatedCodeOptional = Main.applyMutation(originalCode);
 
-        File folder = new File(folderPath);
-        File[] files = folder.listFiles((dir, name) -> name.endsWith("Test.java"));
+                if (mutatedCodeOptional.isPresent()) {
+                    String mutatedCode = mutatedCodeOptional.get();
 
-        if (files != null) {
-            for (File file : files) {
-                String className = file.getName().replace(".java", "");
-                try {
-                    Class<?> clazz = Class.forName(className);
-                    testClasses.add(clazz);
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+                    if (uniqueMutations.add(mutatedCode)) {
+                        saveMutatedCode(mutatedCode);
+
+                        System.out.println("Running tests for: " + ExampleCodeTest.class.getName());
+                        Result result = JUnitCore.runClasses(ExampleCodeTest.class);
+                        System.out.println("  - Ran " + result.getRunCount() + " tests");
+                        System.out.println("  - Passed: " + result.wasSuccessful());
+
+                        if (!result.wasSuccessful()) {
+                            killedMutations++;
+                        }
+                        totalMutations++;
+                    } else {
+                        System.out.println("Skipped - Mutation is repetitive");
+                    }
+                } else {
+                    System.out.println("Skipped - Mutation returned Optional.empty()");
+                    saveMutatedCode(originalCode);
                 }
+            } catch (Exception e) {
+                System.out.println("Error applying mutation. Saving original code.");
+                saveMutatedCode(originalCode);
+                throw new RuntimeException(e);
             }
         }
+        saveMutatedCode(originalCode);
 
-        return testClasses;
+        double mutationScore = (double) killedMutations / totalMutations;
+        System.out.println("\nFinal Mutation Score: " + (mutationScore * 100) + "%");
     }
 
-    private static void runTests(List<Class<?>> testClasses) {
-        for (Class<?> testClass : testClasses) {
-            System.out.println("Running tests for: " + testClass.getName());
-            Result result = JUnitCore.runClasses(testClass);
+    private static String getCodeFromFile() {
+        try {
+            return new String(Files.readAllBytes(Paths.get(MutationTestRunner.ORIGINAL_CODE_FILE_PATH)));
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading original code file", e);
+        }
+    }
 
-            System.out.println("  - Ran " + result.getRunCount() + " tests");
-            System.out.println("  - Passed: " + result.wasSuccessful());
-
-            for (Failure failure : result.getFailures()) {
-                System.out.println("\nFailure: " + failure.toString());
-            }
+    private static void saveMutatedCode(String mutatedCode) {
+        String mutatedFilePath = MUTATED_CODE_FOLDER + "ExampleCode.java";
+        try {
+            Files.write(Paths.get(mutatedFilePath), mutatedCode.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException("Error Saving Mutated Code", e);
         }
     }
 }

@@ -16,12 +16,10 @@ public class ExampleCode {
                 result /= 2;
             }
 
-            // Simulate a long loop
             for (int i = 0; i < num; i++) {
                 result += i;
             }
 
-            // Simulate nested conditions
             if (num % 3 == 0) {
                 if (num % 5 == 0) {
                     result *= 3;
@@ -31,7 +29,6 @@ public class ExampleCode {
             }
         }
 
-        // Simulate more complex logic
         if (result > 100) {
             result = customOperation(result);
         }
