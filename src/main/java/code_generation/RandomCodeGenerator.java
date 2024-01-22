@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.Range;
@@ -59,18 +60,21 @@ public class RandomCodeGenerator {
     // Recursive method to generate an expression
     private Optional<String> generateMultiRule(String nonTerminal, ArrayList<Variable> validVariables) {
         List<String> productions = grammarParser.getProductions(nonTerminal).orElseThrow(() ->
-                new RuntimeException("for :" + nonTerminal));
-        while (!productions.isEmpty()) {
-            int selectedIndex = random.nextInt(productions.size());
+                new RuntimeException("no rule for for :" + nonTerminal));
+        LinkedList<Integer> notTriedIndexes = new LinkedList<>();
+        AtomicInteger c = new AtomicInteger();
+        productions.forEach((p) -> notTriedIndexes.add(c.getAndIncrement()));
 
-            String selectedProduction = productions.get(selectedIndex);
+        while (!productions.isEmpty()) {
+            int selectedIndex = random.nextInt(notTriedIndexes.size());
+
+            String selectedProduction = productions.get(notTriedIndexes.get(selectedIndex));
 
             var optionalString = generateSingleRule(selectedProduction, validVariables);
             if (optionalString.isPresent()) {
                 return Optional.of(optionalString.get().trim().replaceAll("\"", ""));
             } else {
-                if (productions.contains(selectedProduction))
-                    productions.remove(selectedProduction);
+                notTriedIndexes.remove(selectedIndex);
             }
         }
         return Optional.empty();
@@ -101,11 +105,7 @@ public class RandomCodeGenerator {
                 } else {
                     subResult = symbol;
                 }
-                if (true)
-                    throw new RuntimeException();
-                if (subResult.isEmpty())
-                    throw new RuntimeException();
-                result.append(subResult).append(" ");
+                result.append(subResult);
             }
         }
         return Optional.of(result.toString());

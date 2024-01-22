@@ -13,7 +13,7 @@ abstract public class Mutable {
     }
 
     public String mutate(Node node) {
-        return Main.randomCodeGenerator.generate(startTerminal, null, node.getRange().orElseThrow());
+        return Main.randomCodeGenerator.generate(startTerminal, forcedType, node.getRange().orElseThrow());
     }
 
     public abstract boolean isThisType(Node node);

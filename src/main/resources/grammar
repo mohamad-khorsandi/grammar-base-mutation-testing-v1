@@ -1,12 +1,24 @@
-<NumericLiteral> ::= <IntegerLiteral> | <DoubleLiteral>
-
-<IntegerLiteral> ::= <DecimalDigit> <IntegerTail>
+<IntegerLiteral> ::= <DecimalDigit-0> <IntegerTail>
 <IntegerTail> ::= <DecimalDigit> <IntegerTail> | ""
+<DecimalDigit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+<DecimalDigit-0> ::= "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+
 
 <DoubleLiteral> ::= <IntegerLiteral> <DecimalSuffix>
 <DecimalSuffix> ::= "." <DecimalDigit> <DecimalTail> | ""
 <DecimalTail> ::= <DecimalDigit> <DecimalTail> | ""
 
-<DecimalDigit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+<NumericLiteral> ::= <IntegerLiteral> | <DoubleLiteral>
 
-<Int2BoolExp> ::= <>
+<Int2BoolExp> ::= <IntOperand> <comparator> <IntOperand>
+<IntOperand> ::= <name> | <NumericLiteral>
+<comparator> ::= ">" | "<" | "<=" | ">=" | "!=" | "=="
+
+<Bool2BoolExp> ::= <BoolOperand> <BoolOperator> <Bool2BoolExp> | <BoolOperand>
+<BoolOperator> ::= "&&" | "||"
+<BoolOperand> ::= <BooleanLiteral> | <name>
+<BooleanLiteral> ::= "true" | "false"
+
+<IntegerExpression> ::= <IntOperand> <IntOperator> <IntegerExpression> | <IntOperand>
+<IntOperator> ::= "+" | "%" | "*" | "/" | "-"
+<VariableName> ::= <name>
