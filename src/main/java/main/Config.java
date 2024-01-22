@@ -9,10 +9,10 @@ public class Config {
 
     static public Set<Mutable> mutableSegments = Set.of(
             new BooleanExpression(null, null),
-//            new BooleanLiteral("<BooleanLiteral>", null),
-//            new DoubleLiteral("<DoubleLiteral>", null)
-            new IntegerExpression("<IntegerExpression>", "int")
-//            new VariableName("<VariableName>", null),
-//            new IntegerLiteral("<IntegerLiteral>", null)
+            new BooleanLiteral("<BooleanLiteral>", null),
+            new DoubleLiteral("<DoubleLiteral>", null),
+            new IntegerExpression("<IntegerExpression>", "int"),
+            new VariableName("<VariableName>", null),
+            new IntegerLiteral("<IntegerLiteral>", null)
     );
 }
