@@ -30,13 +30,12 @@ public class ExampleCodeTest {
 
     private String getPrimeFactors(int number) {
         ExampleCode ec = new ExampleCode();
-        ec.n = number;
 
         // Redirect System.out to capture printed output
         java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
         System.setOut(new java.io.PrintStream(outContent));
 
-        ec.findPrimeFactors();
+        ec.findPrimeFactors(number);
 
         // Reset System.out to the original output stream
         System.setOut(System.out);
