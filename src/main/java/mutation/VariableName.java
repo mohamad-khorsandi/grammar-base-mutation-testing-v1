@@ -3,6 +3,7 @@ package mutation;
 import code_generation.Variable;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import main.Main;
 
@@ -29,6 +30,10 @@ public class VariableName extends Mutable {
         node.getParentNode().ifPresent((parent) ->
                 p2.set(!(parent instanceof FieldAccessExpr)));
 
-        return p1 && p2.get();
+        AtomicBoolean p3 = new AtomicBoolean(true);
+        node.getParentNode().ifPresent((parent) ->
+                p3.set(!(parent instanceof MethodCallExpr)));
+
+        return p1 && p2.get() && p3.get();
     }
 }

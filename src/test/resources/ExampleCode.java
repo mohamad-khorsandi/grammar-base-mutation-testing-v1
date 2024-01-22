@@ -1,8 +1,5 @@
-import java.util.Scanner;
-
 public class ExampleCode {
-    public void findPrimeFactors(int input) {
-        int n = input;
+    public void findPrimeFactors(int n) {
         // Print 2 as a factor if n is even
         while (n % 2 == 0) {
             System.out.print("2 ");

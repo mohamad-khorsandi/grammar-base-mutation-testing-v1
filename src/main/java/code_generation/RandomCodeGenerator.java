@@ -10,7 +10,9 @@ import java.util.stream.Collectors;
 import com.github.javaparser.Range;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.nodeTypes.NodeWithType;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import main.Config;
 
@@ -40,6 +42,11 @@ public class RandomCodeGenerator {
             if (child.getClass() == VariableDeclarator.class) {
                 String name = ((VariableDeclarator) child).getNameAsString();
                 String type = ((VariableDeclarator) child).getTypeAsString();
+                Range range = findVariableRange(child);
+                variables.add(new Variable(range, type, name));
+            } else if ( child instanceof Parameter) {
+                String name = ((Parameter) child).getChildNodes().get(1).toString();
+                String type = ((Parameter) child).getTypeAsString();
                 Range range = findVariableRange(child);
                 variables.add(new Variable(range, type, name));
             }
