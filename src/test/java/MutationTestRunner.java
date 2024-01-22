@@ -18,44 +18,39 @@ public class MutationTestRunner {
     private static final String ORIGINAL_CODE_FILE_PATH = "src/test/resources/ExampleCode.java";
     private static final String MUTATED_CODE_FOLDER = "src/test/resources/";
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Set<String> uniqueMutations = new HashSet<>();
+        originalCode = getCodeFromFile();
 
         for (int i = 1; i <= NUM_ITERATIONS; i++) {
             System.out.println("Running Iteration " + i);
 
-            originalCode = getCodeFromFile();
 
-            try {
-                Optional<String> mutatedCodeOptional = Main.applyMutation(originalCode);
+            Optional<String> mutatedCodeOptional = Main.applyMutation(originalCode);
 
-                if (mutatedCodeOptional.isPresent()) {
-                    String mutatedCode = mutatedCodeOptional.get();
+            if (mutatedCodeOptional.isPresent()) {
+                String mutatedCode = mutatedCodeOptional.get();
 
-                    if (uniqueMutations.add(mutatedCode)) {
-                        saveMutatedCode(mutatedCode);
+                if (uniqueMutations.add(mutatedCode)) {
+                    saveMutatedCode(mutatedCode);
 
-                        System.out.println("Running tests for: " + ExampleCodeTest.class.getName());
-                        Result result = JUnitCore.runClasses(ExampleCodeTest.class);
-                        System.out.println("  - Ran " + result.getRunCount() + " tests");
-                        System.out.println("  - Passed: " + result.wasSuccessful());
+                    System.out.println("Running tests for: " + ExampleCodeTest.class.getName());
+                    Result result = JUnitCore.runClasses(ExampleCodeTest.class);
+                    System.out.println("  - Ran " + result.getRunCount() + " tests");
+                    System.out.println("  - Passed: " + result.wasSuccessful());
 
-                        if (!result.wasSuccessful()) {
-                            killedMutations++;
-                        }
-                        totalMutations++;
-                    } else {
-                        System.out.println("Skipped - Mutation is repetitive");
+                    if (!result.wasSuccessful()) {
+                        killedMutations++;
                     }
+                    totalMutations++;
                 } else {
-                    System.out.println("Skipped - Mutation returned Optional.empty()");
-                    saveMutatedCode(originalCode);
+                    System.out.println("Skipped - Mutation is repetitive");
                 }
-            } catch (Exception e) {
-                System.out.println("Error applying mutation. Saving original code.");
+            } else {
+                System.out.println("Skipped - Mutation returned Optional.empty()");
                 saveMutatedCode(originalCode);
-                throw new RuntimeException(e);
             }
+
         }
         saveMutatedCode(originalCode);
 

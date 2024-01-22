@@ -4,26 +4,42 @@ import static org.junit.Assert.assertEquals;
 public class ExampleCodeTest {
 
     @Test
-    public void testPerformComplexOperationsWithEmptyArray() {
-        int[] numbers = {};
-        int result = ExampleCode.performComplexOperations(numbers);
-
-        assertEquals(0, result);
+    public void testPrimeFactorsOf12() {
+        assertEquals("2 2 3", getPrimeFactors(12));
     }
 
     @Test
-    public void testPerformComplexOperationsWithNegativeNumbers() {
-        int[] numbers = {-3, 8, -15, 5, -12};
-        int result = ExampleCode.performComplexOperations(numbers);
-
-        assertEquals(74, result);
+    public void testPrimeFactorsOf20() {
+        assertEquals("2 2 5", getPrimeFactors(20));
     }
 
     @Test
-    public void testPerformComplexOperationsWithLargeNumbers() {
-        int[] numbers = {100, 200, 300, 400, 500};
-        int result = ExampleCode.performComplexOperations(numbers);
+    public void testPrimeFactorsOf99() {
+        assertEquals("3 3 11", getPrimeFactors(99));
+    }
 
-        assertEquals(832700, result);
+    @Test
+    public void testPrimeFactorsOf53() {
+        assertEquals("53", getPrimeFactors(53));
+    }
+
+    @Test
+    public void testPrimeFactorsOf1() {
+        assertEquals("", getPrimeFactors(1));
+    }
+
+    private String getPrimeFactors(int number) {
+        ExampleCode.n = number;
+
+        // Redirect System.out to capture printed output
+        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
+        System.setOut(new java.io.PrintStream(outContent));
+
+        ExampleCode.findPrimeFactors();
+
+        // Reset System.out to the original output stream
+        System.setOut(System.out);
+
+        return outContent.toString().trim();
     }
 }

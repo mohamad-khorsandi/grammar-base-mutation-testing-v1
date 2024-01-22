@@ -1,42 +1,25 @@
+import java.util.Scanner;
+
 public class ExampleCode {
+    public static int n;
+    public static void findPrimeFactors() {
+        // Print 2 as a factor if n is even
+        while (n % 2 == 0) {
+            System.out.print("2 ");
+            n /= 2;
+        }
 
-    public static int performComplexOperations(int[] numbers) {
-        int result = 0;
-
-        for (int num : numbers) {
-            result += num;
-
-            if (num % 2 == 0) {
-                result *= 2;
-            } else {
-                result -= 1;
-            }
-
-            if (num > 10) {
-                result /= 2;
-            }
-
-            for (int i = 0; i < num; i++) {
-                result += i;
-            }
-
-            if (num % 3 == 0) {
-                if (num % 5 == 0) {
-                    result *= 3;
-                } else {
-                    result /= 2;
-                }
+        // Check odd factors from 3 onwards
+        for (int i = 3; i <= Math.sqrt(n); i += 2) {
+            while (n % i == 0) {
+                System.out.print(i + " ");
+                n /= i;
             }
         }
 
-        if (result > 100) {
-            result = customOperation(result);
+        // If n becomes a prime greater than 2
+        if (n > 2) {
+            System.out.print(n);
         }
-
-        return result;
-    }
-
-    private static int customOperation(int value) {
-        return value * 2;
     }
 }
