@@ -31,7 +31,8 @@ public class AstTreeGenerator {
     private SimpleNode copyTree(Node node) {
         SimpleNode myTreeNode = new SimpleNode(node);
         for(Node n : node.getChildNodes()) {
-            myTreeNode.children.add(copyTree(n));
+            if (!n.toString().isEmpty())
+                myTreeNode.children.add(copyTree(n));
         }
 
         return myTreeNode;
